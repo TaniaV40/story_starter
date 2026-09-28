@@ -331,22 +331,35 @@ button, textarea, input {
   box-shadow: 0 0 0 3px rgba(201, 166, 107, 0.2);
 }
 
-/* Buttons inside Navy Card */
+/* Buttons & Actions inside Navy Card */
+.idea-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+
 .btn-primary-gold {
   border: 0;
   border-radius: 999px;
   background: var(--gold); /* #C9A66B */
   color: var(--navy); /* #1c3447 */
-  padding: 13px 26px;
+  padding: 12px 24px;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(201, 166, 107, 0.3);
+  box-shadow: 0 6px 18px rgba(201, 166, 107, 0.35);
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .btn-primary-gold:hover:not(:disabled) {
@@ -371,6 +384,38 @@ button, textarea, input {
   text-decoration: underline;
   cursor: pointer;
   font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Connect Google Drive Button matching mockup */
+.btn-google-drive {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.5px solid rgba(201, 166, 107, 0.6);
+  background: rgba(19, 36, 50, 0.7);
+  color: #FFFFFF;
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-google-drive:hover {
+  border-color: var(--gold);
+  background: rgba(201, 166, 107, 0.18);
+  color: var(--gold);
+  box-shadow: 0 4px 14px rgba(201, 166, 107, 0.2);
+}
+
+.btn-google-drive.connected {
+  border-color: var(--emerald-dark);
+  background: rgba(42, 123, 76, 0.2);
+  color: #6EE7B7;
 }
 
 .sample-premise-btn {

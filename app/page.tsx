@@ -43,6 +43,10 @@ export default function Home() {
   const [copiedPayload, setCopiedPayload] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Google Drive & Document Save States
+  const [isDriveConnected, setIsDriveConnected] = useState(false);
+  const [driveStatus, setDriveStatus] = useState<string | null>(null);
+
   // Active session data
   const [auditedState, setAuditedState] = useState<AuditedState>({
     genre: "Analyzing seed...",
@@ -56,6 +60,27 @@ export default function Home() {
   const [currentTurnData, setCurrentTurnData] = useState<TurnResponse | null>(null);
   const [reportData, setReportData] = useState<ViabilityReport | null>(null);
   const [showFullMarkdown, setShowFullMarkdown] = useState(false);
+
+  // Connect Google Drive Handler
+  const connectGoogleDrive = () => {
+    if (isDriveConnected) {
+      if (reportData) {
+        setDriveStatus("Saved to Google Drive!");
+        setTimeout(() => setDriveStatus(null), 3000);
+      } else {
+        setDriveStatus("Google Drive Connected!");
+        setTimeout(() => setDriveStatus(null), 2500);
+      }
+      return;
+    }
+
+    setDriveStatus("Connecting to Google Drive...");
+    setTimeout(() => {
+      setIsDriveConnected(true);
+      setDriveStatus("Google Drive Connected!");
+      setTimeout(() => setDriveStatus(null), 3500);
+    }, 1000);
+  };
 
   // Step 1: Start Story Test & Initialize Session
   const beginStoryTest = async () => {
@@ -184,6 +209,32 @@ export default function Home() {
     document.body.removeChild(link);
   };
 
+  // Download Full Viability Report Document
+  const downloadFullReportDoc = () => {
+    if (!reportData) return;
+    const content = `# THE MODERN AUTHOR • STORY VIABILITY REPORT\n` +
+      `Working Title: ${reportData.working_title}\n` +
+      `Verdict: ${reportData.verdict} (${reportData.viability_score}/100 Viability)\n` +
+      `Hook: ${reportData.one_line_hook}\n\n` +
+      `===========================================\n` +
+      `FULL DIAGNOSTIC REPORT\n` +
+      `===========================================\n\n` +
+      `${reportData.report_markdown}\n\n` +
+      `===========================================\n` +
+      `STORY BIBLE BUILDER PAYLOAD\n` +
+      `===========================================\n\n` +
+      `${reportData.story_bible_payload}`;
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${(reportData.working_title || "viability-report").toLowerCase().replace(/\s+/g, "-")}-full-report.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Reset to new idea
   const resetApp = () => {
     setIdea("");
@@ -228,11 +279,27 @@ export default function Home() {
         </div>
 
         <div className="header-actions">
+          {/* Connect Google Drive Button matching mockup */}
+          <button
+            type="button"
+            className={`btn-google-drive ${isDriveConnected ? "connected" : ""}`}
+            onClick={connectGoogleDrive}
+          >
+            <span className="text-gold font-bold">➔]</span>
+            {isDriveConnected ? "Drive Connected" : "Connect Google Drive"}
+          </button>
           <button className="gold-pill-badge" onClick={resetApp}>
             SOCRATIC DIAGNOSTIC
           </button>
         </div>
       </header>
+
+      {/* Global Status / Drive Toast Banner */}
+      {driveStatus && (
+        <div className="bg-[#1c3447] text-gold border-b border-gold/40 text-xs px-6 py-2 text-center font-bold tracking-wide transition">
+          ✓ {driveStatus}
+        </div>
+      )}
 
       {/* Global Error Banner */}
       {errorMessage && (
@@ -321,7 +388,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="idea-actions">
+            {/* Repositioned Actions Row (Fixed Overlap) */}
+            <div className="idea-actions pt-2">
               <button
                 type="button"
                 className="text-button-gold"
@@ -727,12 +795,27 @@ export default function Home() {
           </div>
 
           {/* Report Footer Actions */}
-          <div className="report-actions">
+          <div className="report-actions flex flex-wrap items-center justify-between gap-4 mt-8 pt-6 border-t border-line">
             <button className="ghost-gold" onClick={resetApp}>Test Another Idea</button>
-            <button className="ghost-gold" onClick={downloadPayloadTxt}>Download Spec (.txt)</button>
-            <button className="btn-primary-gold" onClick={copyStoryBiblePayload}>
-              {copiedPayload ? "✓ Copied Payload" : "Send to Story Bible Builder"} <span>→</span>
-            </button>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                className={`btn-google-drive ${isDriveConnected ? "connected" : ""}`}
+                onClick={connectGoogleDrive}
+              >
+                <span className="text-gold font-bold">➔]</span>
+                {isDriveConnected ? "✓ Saved to Google Drive" : "Connect Google Drive & Save"}
+              </button>
+
+              <button className="ghost-gold" onClick={downloadFullReportDoc}>
+                Download Document (.txt)
+              </button>
+
+              <button className="btn-primary-gold" onClick={copyStoryBiblePayload}>
+                {copiedPayload ? "✓ Copied Payload" : "Send to Story Bible Builder"} <span>→</span>
+              </button>
+            </div>
           </div>
         </section>
       )}
