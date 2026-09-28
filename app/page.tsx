@@ -289,7 +289,7 @@ export default function Home() {
             {isDriveConnected ? "Drive Connected" : "Connect Google Drive"}
           </button>
           <button className="gold-pill-badge" onClick={resetApp}>
-            SOCRATIC DIAGNOSTIC
+            FOR BEGINNERS
           </button>
         </div>
       </header>
