@@ -211,16 +211,20 @@ export default function Home() {
       {/* Global Brand Topbar */}
       <header className="topbar">
         <button className="brand" onClick={resetApp} aria-label="Story Starter home">
-          <span className="brand-mark">TMA</span>
-          <span>
+          <img
+            src="/TMA_main_LOGO.png"
+            alt="The Modern Author Logo"
+            className="brand-logo-img"
+          />
+          <div className="brand-text-block">
             <strong>THE MODERN AUTHOR</strong>
             <small>Story Starter • Developmental Diagnostic</small>
-          </span>
+          </div>
         </button>
         <div className="header-actions">
           <span className="secure">Socratic Mode Active</span>
           <button className="ghost" onClick={resetApp}>New Idea</button>
-          <div className="avatar" title="The Modern Author">MF</div>
+          <div className="avatar" title="The Modern Author">TMA</div>
         </div>
       </header>
 
