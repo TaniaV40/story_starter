@@ -156,7 +156,6 @@ export default function Home() {
 
     setAnswer((prev) => {
       if (prev.includes(`Question ${questionIndex + 1}`)) {
-        // Replace existing question answer
         const regex = new RegExp(`For Question ${questionIndex + 1}[^\\n]*\\n?`, "g");
         return prev.replace(regex, prefix);
       }
@@ -208,23 +207,30 @@ export default function Home() {
 
   return (
     <main className="app-shell min-h-screen flex flex-col justify-between">
-      {/* Global Brand Topbar */}
+      {/* Standarized TMA Header / Navigation Bar */}
       <header className="topbar">
-        <button className="brand" onClick={resetApp} aria-label="Story Starter home">
+        <button className="brand-group" onClick={resetApp} aria-label="Story Starter home">
           <img
-            src="/TMA_main_LOGO.png"
-            alt="The Modern Author Logo"
-            className="brand-logo-img"
+            src="/Modern_Author_logo.png"
+            alt="The Modern Author Icon"
+            className="brand-icon-sq"
           />
-          <div className="brand-text-block">
-            <strong>THE MODERN AUTHOR</strong>
-            <small>Story Starter • Developmental Diagnostic</small>
+          <div className="brand-stacked-text">
+            <span>THE</span>
+            <span>MODERN</span>
+            <span>AUTHOR</span>
           </div>
         </button>
+
+        <div className="app-title-center">
+          <span className="app-name-text">STORY STARTER</span>
+          <span className="app-function-text">DEVELOPMENTAL DIAGNOSTIC ENGINE</span>
+        </div>
+
         <div className="header-actions">
-          <span className="secure">Socratic Mode Active</span>
-          <button className="ghost" onClick={resetApp}>New Idea</button>
-          <div className="avatar" title="The Modern Author">TMA</div>
+          <button className="gold-pill-badge" onClick={resetApp}>
+            SOCRATIC DIAGNOSTIC
+          </button>
         </div>
       </header>
 
@@ -236,16 +242,16 @@ export default function Home() {
         </div>
       )}
 
-      {/* VIEW 1: START SCREEN */}
+      {/* VIEW 1: START SCREEN (Left intro + Right Navy Gold-Dashed Card) */}
       {view === "start" && (
         <section className="start-grid">
-          <div className="intro">
-            <p className="eyebrow">Developmental Diagnostic Engine</p>
+          <div className="intro-left">
+            <p className="eyebrow font-bold">DEVELOPMENTAL DIAGNOSTIC ENGINE</p>
             <h1>Find out if your idea can carry a whole manuscript.</h1>
             <p className="lede">
               Bring the spark. Guided by the editorial methodology of <strong>The Modern Author</strong>, Story Starter runs a rigorous 4-turn Socratic developmental audit—stress-testing stakes, conflict density, and character agency while protecting your authentic voice.
             </p>
-            
+
             <div className="promise-list">
               <p>
                 <span>01</span>
@@ -269,20 +275,26 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-8 pt-4 flex items-center gap-3 text-xs text-slate-500">
-              <span className="text-[#C9A66B] font-bold">TMA PROMISE:</span>
-              <span>"AI is the tool. You are the author. The story is yours. No AI slop."</span>
+            <div className="trust-metrics">
+              <span>Trusted by authors worldwide</span>
+              <span>• High Satisfaction</span>
+              <span>• Learn More</span>
             </div>
+
+            <p className="tma-promise-line">
+              TMA PROMISE: "AI IS THE TOOL. YOU ARE THE AUTHOR. THE STORY IS YOURS. NO AI SLOP."
+            </p>
           </div>
 
-          <div className="idea-card">
-            <div className="card-heading">
-              <span className="step-chip">STEP 1 OF 4</span>
-              <span className="word-count">{wordCount} {wordCount === 1 ? "word" : "words"}</span>
+          {/* Right Navy Card (#1c3447 with Gold Dashed Border) */}
+          <div className="tma-navy-card">
+            <div className="card-heading-navy">
+              <span className="step-chip-gold">STEP 1 OF 4</span>
+              <span className="word-count-light">{wordCount} {wordCount === 1 ? "word" : "words"}</span>
             </div>
 
             <label htmlFor="story-idea">What is the story idea you cannot stop thinking about?</label>
-            <p className="hint">One or two sentences is enough. It does not need to be polished.</p>
+            <p className="hint-light">One or two sentences is enough. It does not need to be polished.</p>
 
             <textarea
               id="story-idea"
@@ -294,13 +306,13 @@ export default function Home() {
 
             {/* Quick Sample Selector */}
             <div className="mb-4">
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Or load a sample premise:</p>
+              <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Or load a sample premise:</p>
               <div className="flex flex-wrap gap-1.5">
                 {SAMPLE_IDEAS.map((sample) => (
                   <button
                     key={sample.title}
                     type="button"
-                    className="text-xs px-2.5 py-1 rounded bg-slate-200/90 hover:bg-slate-300 text-slate-800 transition cursor-pointer font-medium"
+                    className="sample-premise-btn"
                     onClick={() => setIdea(sample.text)}
                   >
                     {sample.title}
@@ -312,13 +324,13 @@ export default function Home() {
             <div className="idea-actions">
               <button
                 type="button"
-                className="text-button"
+                className="text-button-gold"
                 onClick={() => setIdea(SAMPLE_IDEAS[0].text)}
               >
                 Use sample
               </button>
               <button
-                className="primary"
+                className="btn-primary-gold"
                 disabled={!idea.trim() || isLoading}
                 onClick={beginStoryTest}
               >
@@ -326,7 +338,7 @@ export default function Home() {
                 <span>→</span>
               </button>
             </div>
-            <p className="privacy-note">Zero-prose editorial safety enforced • Authorship protected</p>
+            <p className="privacy-note-light">Zero-prose editorial safety enforced • Authorship protected</p>
           </div>
         </section>
       )}
@@ -337,44 +349,38 @@ export default function Home() {
           {/* Left Panel: Audited Narrative State Board */}
           <aside className="progress-panel">
             <div className="mb-6">
-              <p className="eyebrow">Audited Narrative State</p>
+              <p className="eyebrow font-bold">Audited Narrative State</p>
               <h2 className="text-2xl font-serif mt-1">Diagnostic Board</h2>
             </div>
 
             <div className="space-y-3 mb-6">
-              {/* Parameter 1: Genre */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Locked Genre</span>
-                <p className="text-sm font-serif font-bold text-[#0D1B2A] mt-0.5">{auditedState.genre || "Analyzing..."}</p>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Locked Genre</span>
+                <p className="text-sm font-serif font-bold text-[#1c3447] mt-0.5">{auditedState.genre || "Analyzing..."}</p>
               </div>
 
-              {/* Parameter 2: Premise */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Starting Premise</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Starting Premise</span>
                 <p className="text-xs text-slate-700 line-clamp-2 mt-0.5 italic">"{auditedState.premise || idea}"</p>
               </div>
 
-              {/* Parameter 3: Character Agency */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Protagonist & Agency</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Protagonist & Agency</span>
                 <p className="text-xs text-slate-700 mt-0.5">{auditedState.character}</p>
               </div>
 
-              {/* Parameter 4: Setting / Crucible */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Setting / Crucible</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Setting / Crucible</span>
                 <p className="text-xs text-slate-700 mt-0.5">{auditedState.setting}</p>
               </div>
 
-              {/* Parameter 5: Core Theme */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Thematic Conflict</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Thematic Conflict</span>
                 <p className="text-xs text-slate-700 mt-0.5">{auditedState.theme}</p>
               </div>
 
-              {/* Parameter 6: Target Scope */}
               <div className="p-3 bg-white/80 rounded border border-line shadow-xs">
-                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#0D1B2A]">Target Scope</span>
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#1c3447]">Target Scope</span>
                 <p className="text-xs text-slate-700 mt-0.5">{auditedState.scope}</p>
               </div>
             </div>
@@ -406,127 +412,128 @@ export default function Home() {
             </div>
           </aside>
 
-          {/* Right Panel: Socratic Dialogue Area */}
-          <div className="conversation">
-            <div className="turn-label">
+          {/* Right Panel: Socratic Dialogue Area (In Navy Card with Gold Stitched Border) */}
+          <div className="conversation-area">
+            <div className="turn-label font-bold mb-3">
               ROUND {turn} OF 4 • {turn === 1 ? "SEED AUDIT & INITIAL SWEEP" : turn === 2 ? "ENGINE & STAKES STRESS-TEST" : "SCOPE & MARKET VERIFICATION"}
             </div>
 
-            {/* Editorial Assessment Card */}
-            <div className="assistant-card flex-col sm:flex-row">
-              <span className="assistant-icon">TMA</span>
-              <div className="space-y-3 flex-1">
-                {currentTurnData?.assessment && (
-                  <p className="font-semibold text-slate-900 leading-relaxed text-sm">
-                    {currentTurnData.assessment}
+            <div className="tma-navy-card">
+              <div className="flex gap-4 items-start mb-4">
+                <span className="assistant-icon-tma">TMA</span>
+                <div className="space-y-3 flex-1">
+                  {currentTurnData?.assessment && (
+                    <p className="font-semibold text-white leading-relaxed text-sm">
+                      {currentTurnData.assessment}
+                    </p>
+                  )}
+
+                  <p className="text-slate-200 text-sm leading-relaxed">
+                    {currentTurnData?.analysis || "Analyzing your narrative seed..."}
                   </p>
-                )}
 
-                <p className="analysis-line">
-                  {currentTurnData?.analysis || "Analyzing your narrative seed..."}
-                </p>
+                  {currentTurnData?.primary_risk_flag && (
+                    <div className="p-3 bg-red-950/80 border-l-4 border-red-500 rounded text-xs text-red-200">
+                      <strong className="text-red-400">PRIMARY RISK FLAGGED:</strong> {currentTurnData.primary_risk_flag}
+                    </div>
+                  )}
 
-                {currentTurnData?.primary_risk_flag && (
-                  <div className="p-3 bg-red-50 border-l-3 border-[#9E2A2B] rounded text-xs text-red-950">
-                    <strong>PRIMARY RISK FLAGGED:</strong> {currentTurnData.primary_risk_flag}
-                  </div>
-                )}
-
-                {/* Turn 3 Reframed Epistemic Display */}
-                {turn === 3 && (
-                  <div className="space-y-2.5 pt-2 border-t border-line/60">
-                    {currentTurnData?.what_im_reading && (
-                      <div className="p-2.5 bg-white/70 rounded border border-line text-xs">
-                        <strong className="text-[#0D1B2A] block uppercase font-mono mb-1">What I'm Reading (Theme & Arc):</strong>
-                        <p className="text-slate-700">{currentTurnData.what_im_reading}</p>
-                      </div>
-                    )}
-                    {currentTurnData?.comp_titles && (
-                      <div className="p-2.5 bg-white/70 rounded border border-line text-xs">
-                        <strong className="text-[#0D1B2A] block uppercase font-mono mb-1">Proposed Comp Titles:</strong>
-                        <p className="text-slate-800 font-serif italic">{currentTurnData.comp_titles}</p>
-                      </div>
-                    )}
-                    {currentTurnData?.proposed_scope && (
-                      <div className="p-2.5 bg-white/70 rounded border border-line text-xs">
-                        <strong className="text-[#0D1B2A] block uppercase font-mono mb-1">Recommended Scope:</strong>
-                        <p className="text-slate-700">{currentTurnData.proposed_scope}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Targeted Socratic Questions (Exact 2 in Turn 1 & 2, 1 in Turn 3) */}
-            <div className="my-6 space-y-6">
-              {currentTurnData?.questions && currentTurnData.questions.map((qItem, qIdx) => (
-                <div key={qItem.id || qIdx} className="p-5 bg-cream/90 rounded border border-line shadow-xs">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="px-2 py-0.5 rounded bg-[#0D1B2A] text-[#C9A66B] font-mono text-xs font-bold">
-                      QUESTION {qIdx + 1} OF {currentTurnData.questions.length}
-                    </span>
-                    {qItem.explanation && (
-                      <span className="text-xs text-slate-500 italic">— {qItem.explanation}</span>
-                    )}
-                  </div>
-
-                  <h3 className="font-serif text-lg font-bold text-[#0D1B2A] mb-3">
-                    {qItem.question}
-                  </h3>
-
-                  {qItem.options && qItem.options.length > 0 && (
-                    <div className="grid grid-cols-1 gap-2 mt-2">
-                      {qItem.options.map((opt) => (
-                        <button
-                          key={opt.id}
-                          type="button"
-                          onClick={() => handleSelectOption(qIdx, opt)}
-                          className="text-left p-3 rounded bg-white hover:bg-slate-100 border border-line transition shadow-2xs group flex items-start gap-3 cursor-pointer"
-                        >
-                          <span className="w-5 h-5 rounded-full bg-[#0D1B2A]/10 text-[#0D1B2A] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#0D1B2A] group-hover:text-[#C9A66B] transition">
-                            {opt.label}
-                          </span>
-                          <span className="text-xs text-slate-800 leading-relaxed">{opt.text}</span>
-                        </button>
-                      ))}
+                  {/* Turn 3 Reframed Epistemic Display */}
+                  {turn === 3 && (
+                    <div className="space-y-2.5 pt-2 border-t border-slate-700">
+                      {currentTurnData?.what_im_reading && (
+                        <div className="p-2.5 bg-slate-900/80 rounded border border-slate-700 text-xs">
+                          <strong className="text-gold block uppercase font-mono mb-1">What I'm Reading (Theme & Arc):</strong>
+                          <p className="text-slate-300">{currentTurnData.what_im_reading}</p>
+                        </div>
+                      )}
+                      {currentTurnData?.comp_titles && (
+                        <div className="p-2.5 bg-slate-900/80 rounded border border-slate-700 text-xs">
+                          <strong className="text-gold block uppercase font-mono mb-1">Proposed Comp Titles:</strong>
+                          <p className="text-white font-serif italic">{currentTurnData.comp_titles}</p>
+                        </div>
+                      )}
+                      {currentTurnData?.proposed_scope && (
+                        <div className="p-2.5 bg-slate-900/80 rounded border border-slate-700 text-xs">
+                          <strong className="text-gold block uppercase font-mono mb-1">Recommended Scope:</strong>
+                          <p className="text-slate-300">{currentTurnData.proposed_scope}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {/* User Response Area */}
-            <label className="answer-label" htmlFor="answer">
-              Your Answer / Strategic Direction (Answer both questions together or write freely)
-            </label>
-            <textarea
-              id="answer"
-              className="answer-box"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Click options above to populate your choices, or write your own custom direction..."
-              disabled={isLoading}
-            />
+              {/* Targeted Questions */}
+              <div className="my-6 space-y-4">
+                {currentTurnData?.questions && currentTurnData.questions.map((qItem, qIdx) => (
+                  <div key={qItem.id || qIdx} className="p-4 bg-[#132432] rounded border border-slate-700">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="px-2 py-0.5 rounded bg-gold text-navy font-mono text-xs font-bold">
+                        QUESTION {qIdx + 1} OF {currentTurnData.questions.length}
+                      </span>
+                      {qItem.explanation && (
+                        <span className="text-xs text-slate-400 italic">— {qItem.explanation}</span>
+                      )}
+                    </div>
 
-            <div className="conversation-actions">
-              <span className="text-xs text-slate-500">
-                You retain complete creative authority. Story Starter will not ghostwrite your prose.
-              </span>
-              <button
-                className="primary"
-                disabled={!answer.trim() || isLoading}
-                onClick={submitTurn}
-              >
-                {isLoading
-                  ? turn === 3
-                    ? "Generating 8-Section Viability Report..."
-                    : "Analyzing Response..."
-                  : turn === 3
-                  ? "Generate Viability Report"
-                  : "Submit Turn"}
-                <span>→</span>
-              </button>
+                    <h3 className="font-serif text-lg font-bold text-white mb-3">
+                      {qItem.question}
+                    </h3>
+
+                    {qItem.options && qItem.options.length > 0 && (
+                      <div className="grid grid-cols-1 gap-2 mt-2">
+                        {qItem.options.map((opt) => (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => handleSelectOption(qIdx, opt)}
+                            className="text-left p-3 rounded bg-[#1c3447] hover:bg-slate-800 border border-slate-700 transition shadow-2xs group flex items-start gap-3 cursor-pointer"
+                          >
+                            <span className="w-5 h-5 rounded-full bg-gold/20 text-gold font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-gold group-hover:text-navy transition">
+                              {opt.label}
+                            </span>
+                            <span className="text-xs text-slate-200 leading-relaxed">{opt.text}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* User Response Area */}
+              <label className="answer-label text-white text-xs font-bold block mb-2" htmlFor="answer">
+                Your Answer / Strategic Direction (Answer questions together or write freely)
+              </label>
+              <textarea
+                id="answer"
+                className="answer-box-navy"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                placeholder="Click options above to populate your choices, or write your own custom direction..."
+                disabled={isLoading}
+              />
+
+              <div className="conversation-actions mt-4 flex items-center justify-between gap-4">
+                <span className="text-xs text-slate-400">
+                  You retain complete creative authority. Story Starter protects your authentic voice.
+                </span>
+                <button
+                  className="btn-primary-gold"
+                  disabled={!answer.trim() || isLoading}
+                  onClick={submitTurn}
+                >
+                  {isLoading
+                    ? turn === 3
+                      ? "Generating 8-Section Viability Report..."
+                      : "Analyzing Response..."
+                    : turn === 3
+                    ? "Generate Viability Report"
+                    : "Submit Turn"}
+                  <span>→</span>
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -535,7 +542,7 @@ export default function Home() {
       {/* VIEW 3: REPORT VIEW (TURN 4) */}
       {view === "report" && reportData && (
         <section className="report-wrap">
-          {/* Report Header & Editorial Verdict Badge */}
+          {/* Report Header & Verdict Badge */}
           <div className="report-header">
             <div>
               <p className="eyebrow">The Modern Author • Viability Report</p>
@@ -544,11 +551,11 @@ export default function Home() {
             </div>
 
             <div className="verdict text-center">
-              <small className="tracking-widest uppercase font-bold text-slate-500">Editorial Verdict</small>
-              <strong className={`verdict-stamp ${reportData.verdict === "GO" ? "text-emerald-800" : reportData.verdict === "PIVOT" ? "text-amber-800" : "text-rose-800"}`}>
+              <small className="tracking-widest uppercase font-bold text-gold">Editorial Verdict</small>
+              <strong className={`verdict-stamp ${reportData.verdict === "GO" ? "text-emerald-400" : reportData.verdict === "PIVOT" ? "text-amber-400" : "text-rose-400"}`}>
                 {reportData.verdict}
               </strong>
-              <span className="text-xs font-bold text-slate-600">{reportData.viability_score}/100 Viability ({reportData.overall_score_label})</span>
+              <span className="text-xs font-bold text-slate-200">{reportData.viability_score}/100 Viability ({reportData.overall_score_label})</span>
             </div>
           </div>
 
@@ -557,7 +564,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               <div>
                 <span className="font-mono text-[10px] text-slate-500 uppercase font-bold">Genre & Subgenre:</span>
-                <p className="font-bold text-[#0D1B2A] text-sm">{reportData.genre_subgenre}</p>
+                <p className="font-bold text-[#1c3447] text-sm">{reportData.genre_subgenre}</p>
               </div>
               <div>
                 <span className="font-mono text-[10px] text-slate-500 uppercase font-bold">Comp Titles:</span>
@@ -565,18 +572,17 @@ export default function Home() {
               </div>
               <div>
                 <span className="font-mono text-[10px] text-slate-500 uppercase font-bold">Recommended Scope:</span>
-                <p className="font-bold text-[#0D1B2A] text-sm">{reportData.recommended_scope}</p>
+                <p className="font-bold text-[#1c3447] text-sm">{reportData.recommended_scope}</p>
               </div>
             </div>
           </div>
 
           {/* 8-Section Comprehensive Grid */}
           <div className="report-grid">
-            {/* Scorecard */}
             <article className="score-card">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-serif text-2xl font-bold">Diagnostic Scorecard</h3>
-                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#0D1B2A] text-[#C9A66B]">
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#1c3447] text-gold">
                   {reportData.viability_score}% Viable
                 </span>
               </div>
@@ -592,7 +598,7 @@ export default function Home() {
                   <div className="metric" key={item.label}>
                     <div className="flex justify-between text-xs font-bold mb-1">
                       <span>{item.label}</span>
-                      <span className="font-mono text-[#0D1B2A]">{item.score}/100</span>
+                      <span className="font-mono text-[#1c3447]">{item.score}/100</span>
                     </div>
                     <div className="bar">
                       <i style={{ width: `${item.score}%` }} />
@@ -608,7 +614,7 @@ export default function Home() {
 
             {/* Section 4: Narrative Engine Analysis */}
             <article className="finding-card">
-              <small className="text-[#C9A66B] font-bold">SECTION 4 • NARRATIVE ENGINE</small>
+              <small className="text-gold font-bold">SECTION 4 • NARRATIVE ENGINE</small>
               <h3 className="font-serif text-xl font-bold text-slate-900 mt-1 mb-2">
                 Structural Capacity Analysis
               </h3>
@@ -622,7 +628,7 @@ export default function Home() {
 
             {/* Section 5: Risk Analysis */}
             <article className="finding-card risk">
-              <small className="text-[#9E2A2B] font-bold">SECTION 5 • PRIMARY STRUCTURAL RISK</small>
+              <small className="text-red-700 font-bold">SECTION 5 • PRIMARY STRUCTURAL RISK</small>
               <h3 className="font-serif text-xl font-bold text-slate-900 mt-1 mb-2">
                 {reportData.primary_fatal_flaw}
               </h3>
@@ -641,7 +647,7 @@ export default function Home() {
             <article className="next-card md:col-span-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <small className="text-[#C9A66B] font-bold">SECTION 6 • VISUAL TONE ANCHOR</small>
+                  <small className="text-gold font-bold">SECTION 6 • VISUAL TONE ANCHOR</small>
                   <h4 className="font-serif font-bold text-slate-900 text-lg mt-1 mb-2">Atmospheric Description</h4>
                   <p className="text-xs text-slate-700 leading-relaxed italic">
                     "{reportData.visual_tone_anchor}"
@@ -649,7 +655,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <small className="text-[#0D1B2A] font-bold">SECTION 7 • STRATEGIC ACTION ITEMS</small>
+                  <small className="text-[#1c3447] font-bold">SECTION 7 • STRATEGIC ACTION ITEMS</small>
                   <h4 className="font-serif font-bold text-slate-900 text-lg mt-1 mb-2">Required Before Story Bible:</h4>
                   <ol className="list-decimal pl-4 space-y-1 text-xs text-slate-700">
                     {reportData.strategic_action_items.required_before_bible.map((item, idx) => (
@@ -662,10 +668,10 @@ export default function Home() {
           </div>
 
           {/* Section 8: Story Bible Builder Payload Drawer */}
-          <div className="my-8 p-6 bg-[#0D1B2A] text-slate-100 rounded border border-[#1F2E3D] shadow-lg">
+          <div className="tma-navy-card my-8">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-slate-700">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#C9A66B] font-bold">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-gold font-bold">
                   Section 8 • Canonical Payload
                 </span>
                 <h3 className="text-lg font-serif font-bold text-white mt-0.5">
@@ -680,21 +686,21 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={copyStoryBiblePayload}
-                  className="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-[#C9A66B] text-xs font-mono font-bold border border-slate-600 transition flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-gold text-xs font-mono font-bold border border-slate-600 transition flex items-center gap-1.5 cursor-pointer"
                 >
                   {copiedPayload ? "✓ Copied to Clipboard" : "Copy Payload"}
                 </button>
                 <button
                   type="button"
                   onClick={downloadPayloadTxt}
-                  className="px-4 py-2 rounded bg-[#C9A66B] hover:bg-[#E6D2B0] text-[#0D1B2A] text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer"
+                  className="btn-primary-gold"
                 >
                   Download .txt
                 </button>
               </div>
             </div>
 
-            <pre className="text-xs font-mono bg-slate-950 p-4 rounded border border-slate-800 overflow-x-auto text-slate-200 max-h-64 leading-relaxed whitespace-pre-wrap select-all">
+            <pre className="text-xs font-mono bg-[#132432] p-4 rounded border border-slate-700 overflow-x-auto text-slate-200 max-h-64 leading-relaxed whitespace-pre-wrap select-all">
               {reportData.story_bible_payload}
             </pre>
           </div>
@@ -706,7 +712,7 @@ export default function Home() {
                 Full 8-Section Diagnostic Report (Markdown)
               </span>
               <button
-                className="text-xs text-[#0D1B2A] underline font-bold cursor-pointer"
+                className="text-xs text-[#1c3447] underline font-bold cursor-pointer"
                 onClick={() => setShowFullMarkdown(!showFullMarkdown)}
               >
                 {showFullMarkdown ? "Hide Full Report" : "View Complete Report"}
@@ -722,9 +728,9 @@ export default function Home() {
 
           {/* Report Footer Actions */}
           <div className="report-actions">
-            <button className="ghost" onClick={resetApp}>Test Another Idea</button>
-            <button className="secondary" onClick={downloadPayloadTxt}>Download Spec (.txt)</button>
-            <button className="primary" onClick={copyStoryBiblePayload}>
+            <button className="ghost-gold" onClick={resetApp}>Test Another Idea</button>
+            <button className="ghost-gold" onClick={downloadPayloadTxt}>Download Spec (.txt)</button>
+            <button className="btn-primary-gold" onClick={copyStoryBiblePayload}>
               {copiedPayload ? "✓ Copied Payload" : "Send to Story Bible Builder"} <span>→</span>
             </button>
           </div>
