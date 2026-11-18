@@ -1,8 +1,7 @@
-import {
+import type {
   AuditedState,
   SessionMessage,
   StorySession,
-  StoryStage,
   TurnResponse,
   ViabilityReport,
 } from "./types";
@@ -23,16 +22,59 @@ export function getSession(id: string): StorySession | undefined {
   return sessionsMap.get(id);
 }
 
-export async function createSession(initialSeed: string): Promise<{ session: StorySession; turn1Response: TurnResponse }> {
+function formatTurnForTranscript(turnResp: TurnResponse): string {
+  const parts: string[] = [];
+  if (turnResp.assessment) parts.push(turnResp.assessment);
+  if (turnResp.analysis && turnResp.analysis !== turnResp.assessment) {
+    parts.push(turnResp.analysis);
+  }
+  if (turnResp.primary_risk_flag) {
+    parts.push(`Primary Structural Risk: ${turnResp.primary_risk_flag}`);
+  }
+  if (turnResp.what_im_reading) {
+    parts.push(`What I'm Reading: ${turnResp.what_im_reading}`);
+  }
+  if (turnResp.what_i_need) {
+    parts.push(`What I Still Need from You: ${turnResp.what_i_need}`);
+  }
+  if (turnResp.proposed_scope) {
+    parts.push(`Proposed Scope: ${turnResp.proposed_scope}`);
+  }
+  if (turnResp.comp_titles) {
+    parts.push(`Comp Titles: ${turnResp.comp_titles}`);
+  }
+  if (turnResp.target_reader) {
+    parts.push(`Target Reader & Genre: ${turnResp.target_reader}`);
+  }
+  if (turnResp.whats_fresh) {
+    parts.push(`What's Fresh: ${turnResp.whats_fresh}`);
+  }
+  if (turnResp.questions && turnResp.questions.length > 0) {
+    const qFormatted = turnResp.questions
+      .map((q, i) => {
+        const opts = (q.options || [])
+          .map((o) => `  (${o.label}) ${o.text}`)
+          .join("\n");
+        return `Question ${i + 1}: ${q.question}${q.explanation ? ` (${q.explanation})` : ""}\n${opts}`;
+      })
+      .join("\n\n");
+    parts.push(qFormatted);
+  }
+  return parts.join("\n\n");
+}
+
+export async function createSession(
+  initialSeed: string
+): Promise<{ session: StorySession; turn1Response: TurnResponse }> {
   const sessionId = generateId();
   const now = new Date().toISOString();
 
-  // Call Gemini Turn 1 to conduct state audit & generate probing questions
+  // Call Claude Turn 1 to conduct state audit & generate 2 probing questions
   const turn1Response = await callGeminiTurn1(initialSeed);
 
   const initialAuditedState: AuditedState = {
     genre: turn1Response.state_audit?.genre || "Fiction",
-    premise: initialSeed.trim(),
+    premise: turn1Response.state_audit?.premise || initialSeed.trim(),
     character: turn1Response.state_audit?.character || "Pending Turn 2...",
     setting: turn1Response.state_audit?.setting || "Pending Turn 2...",
     theme: turn1Response.state_audit?.theme || "Pending Turn 3...",
@@ -47,12 +89,11 @@ export async function createSession(initialSeed: string): Promise<{ session: Sto
     timestamp: now,
   };
 
-  const qFormatted = (turn1Response.questions || []).map((q, i) => `Question ${i + 1}: ${q.question}`).join("\n");
   const modelMessage: SessionMessage = {
     id: "msg_" + Math.random().toString(36).substring(2, 9),
     role: "model",
     turn: 1,
-    content: `${turn1Response.analysis}\n\n${qFormatted}`,
+    content: formatTurnForTranscript(turn1Response),
     timestamp: new Date().toISOString(),
     structured_data: turn1Response,
   };
@@ -74,9 +115,14 @@ export async function createSession(initialSeed: string): Promise<{ session: Sto
 
 export async function processTurnAnswer(
   sessionId: string,
-  userAnswer: string
+  userAnswer: string,
+  fallbackSession?: StorySession
 ): Promise<{ session: StorySession; turnResponse: TurnResponse }> {
-  const session = sessionsMap.get(sessionId);
+  let session = sessionsMap.get(sessionId);
+  if (!session && fallbackSession) {
+    session = fallbackSession;
+    sessionsMap.set(sessionId, session);
+  }
   if (!session) {
     throw new Error(`Session ${sessionId} not found`);
   }
@@ -99,7 +145,7 @@ export async function processTurnAnswer(
     timestamp: now,
   });
 
-  // Call Gemini for next turn
+  // Call Claude for Turn 2 or Turn 3
   const turnResponse = await callGeminiTurn(
     nextTurn,
     session.messages,
@@ -121,12 +167,11 @@ export async function processTurnAnswer(
   session.updatedAt = now;
 
   // Record model response
-  const qTurnFormatted = (turnResponse.questions || []).map((q, i) => `Question ${i + 1}: ${q.question}`).join("\n");
   session.messages.push({
     id: "msg_" + Math.random().toString(36).substring(2, 9),
     role: "model",
     turn: nextTurn,
-    content: `${turnResponse.analysis}\n\n${qTurnFormatted}`,
+    content: formatTurnForTranscript(turnResponse),
     timestamp: new Date().toISOString(),
     structured_data: turnResponse,
   });
@@ -137,9 +182,14 @@ export async function processTurnAnswer(
 
 export async function generateReport(
   sessionId: string,
-  finalAnswer: string
+  finalAnswer: string,
+  fallbackSession?: StorySession
 ): Promise<{ session: StorySession; report: ViabilityReport }> {
-  const session = sessionsMap.get(sessionId);
+  let session = sessionsMap.get(sessionId);
+  if (!session && fallbackSession) {
+    session = fallbackSession;
+    sessionsMap.set(sessionId, session);
+  }
   if (!session) {
     throw new Error(`Session ${sessionId} not found`);
   }
@@ -155,7 +205,7 @@ export async function generateReport(
     timestamp: now,
   });
 
-  // Call Gemini Turn 4 Report generator
+  // Call Claude Turn 4 Report generator
   const report = await callGeminiTurn4Report(
     session.messages,
     finalAnswer,

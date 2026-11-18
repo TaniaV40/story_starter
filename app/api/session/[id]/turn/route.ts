@@ -20,6 +20,7 @@ export async function POST(
 
     const body = (await request.json()) as any;
     const userAnswer = body?.user_answer || body?.userAnswer || body?.answer;
+    const fallbackSession = body?.session;
 
     if (!userAnswer || typeof userAnswer !== "string" || !userAnswer.trim()) {
       return NextResponse.json(
@@ -28,7 +29,11 @@ export async function POST(
       );
     }
 
-    const { session, turnResponse } = await processTurnAnswer(sessionId, userAnswer);
+    const { session, turnResponse } = await processTurnAnswer(
+      sessionId,
+      userAnswer,
+      fallbackSession
+    );
 
     return NextResponse.json({
       success: true,

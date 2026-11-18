@@ -19,9 +19,15 @@ export async function POST(
     }
 
     const body = (await request.json()) as any;
-    const finalAnswer = body?.user_answer || body?.userAnswer || body?.answer || "Final confirmation verified.";
+    const finalAnswer =
+      body?.user_answer || body?.userAnswer || body?.answer || "Final confirmation verified.";
+    const fallbackSession = body?.session;
 
-    const { session, report } = await generateReport(sessionId, finalAnswer);
+    const { session, report } = await generateReport(
+      sessionId,
+      finalAnswer,
+      fallbackSession
+    );
 
     return NextResponse.json({
       success: true,
